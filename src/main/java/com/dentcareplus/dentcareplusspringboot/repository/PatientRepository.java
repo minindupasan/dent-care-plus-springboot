@@ -1,8 +1,7 @@
-package com.dentcareplus.dentcareplusspringboot;
+package com.dentcareplus.dentcareplusspringboot.repository;
 
+import com.dentcareplus.dentcareplusspringboot.entity.Patient;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 public interface PatientRepository extends JpaRepository<Patient, Long> {
-
 }

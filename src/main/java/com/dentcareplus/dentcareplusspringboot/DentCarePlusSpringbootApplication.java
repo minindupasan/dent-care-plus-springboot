@@ -1,22 +1,21 @@
 package com.dentcareplus.dentcareplusspringboot;
 
-import org.springframework.boot.CommandLineRunner;
+import com.dentcareplus.dentcareplusspringboot.entity.Patient;
+import com.dentcareplus.dentcareplusspringboot.repository.PatientRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 
+import java.util.List;
 
 @SpringBootApplication
 public class DentCarePlusSpringbootApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(DentCarePlusSpringbootApplication.class, args);
+    private final PatientRepository patientRepository;
+
+    public DentCarePlusSpringbootApplication(PatientRepository patientRepository) {
+        this.patientRepository = patientRepository;
     }
 
-    @Bean
-    CommandLineRunner commandLineRunner(PatientRepository patientRepository) {
-        return args -> {
-            Patient patient1 = new Patient("John", "Doe", "01/01/1999", "male", "asd", "asd", "asd");
-            patientRepository.save(patient1);
-        };
+    public static void main(String[] args) {
+        SpringApplication.run(DentCarePlusSpringbootApplication.class, args);
     }
 }
