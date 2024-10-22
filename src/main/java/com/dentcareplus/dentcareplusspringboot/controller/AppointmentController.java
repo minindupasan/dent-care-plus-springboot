@@ -13,6 +13,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/appointments")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AppointmentController {
 
     @Autowired
@@ -60,7 +61,7 @@ public class AppointmentController {
     }
 
     // PUT request to edit an appointment
-    @PutMapping("/{appointmentId}")
+    @PutMapping("update/{appointmentId}")
     public ResponseEntity<Appointment> editAppointment(@PathVariable Long appointmentId, @RequestBody Appointment appointmentDetails) {
         Optional<Appointment> updatedAppointment = Optional.ofNullable(appointmentService.updateAppointment(appointmentId, appointmentDetails));
 
@@ -69,7 +70,7 @@ public class AppointmentController {
     }
 
     // DELETE request to delete an appointment
-    @DeleteMapping("/{appointmentId}")
+    @DeleteMapping("delete/{appointmentId}")
     public ResponseEntity<Void> deleteAppointment(@PathVariable Long appointmentId) {
         Optional<Appointment> appointment = Optional.ofNullable(appointmentService.getAppointmentById(appointmentId));
 
