@@ -42,7 +42,6 @@ public class AppointmentService {
                 .orElseThrow(() -> new IllegalArgumentException("Appointment with ID " + id + " not found."));
         appointment.setAppointmentDate(appointmentDetails.getAppointmentDate());
         appointment.setAppointmentTime(appointmentDetails.getAppointmentTime());
-        appointment.setDentistName(appointmentDetails.getDentistName());
         appointment.setReason(appointmentDetails.getReason());
         appointment.setStatus(appointmentDetails.getStatus());
         return appointmentRepository.save(appointment);
