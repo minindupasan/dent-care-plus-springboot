@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/appointments")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://dental-clinic-management-system-fnvkt5lyc.vercel.app")
 public class AppointmentController {
 
     @Autowired
