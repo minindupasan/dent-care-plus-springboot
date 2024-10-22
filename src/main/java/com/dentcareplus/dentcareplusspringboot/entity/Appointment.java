@@ -29,9 +29,6 @@ public class Appointment {
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
 
-    @Column(name = "dentistName", length = 100, nullable = false)
-    private String dentistName;
-
     @Column(name = "appointmentDate", nullable = false)
     private LocalDate appointmentDate;
 
@@ -73,15 +70,7 @@ public class Appointment {
     public void setPatient(Patient patient) {
         this.patient = patient;
     }
-
-    public String getDentistName() {
-        return dentistName;
-    }
-
-    public void setDentistName(String dentistName) {
-        this.dentistName = dentistName;
-    }
-
+    
     public LocalDate getAppointmentDate() {
         return appointmentDate;
     }
