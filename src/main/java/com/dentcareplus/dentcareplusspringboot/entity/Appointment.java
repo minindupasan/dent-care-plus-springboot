@@ -22,9 +22,6 @@ public class Appointment {
     )
     private Long appointmentID;
 
-    @Column(name = "formattedAppointmentID", length = 10)
-    private String formattedAppointmentID;
-
     @ManyToOne
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
@@ -38,14 +35,8 @@ public class Appointment {
     @Column(name = "reason", length = 255)
     private String reason;
 
-    @Column(name = "status")
-    private String status;
-
-
-    @PostPersist
-    private void generateFormattedAppointmentID() {
-        this.formattedAppointmentID = String.format("A%04d", this.appointmentID);
-    }
+    @Column(name = "status", nullable = false)
+    private String status = "Scheduled";
 
 
     // Getters and Setters
@@ -55,14 +46,6 @@ public class Appointment {
 
     public void setAppointmentID(Long appointmentID) {
         this.appointmentID = appointmentID;
-    }
-
-    public String getFormattedAppointmentID() {
-        return formattedAppointmentID;
-    }
-
-    public void setFormattedAppointmentID(String formattedAppointmentID) {
-        this.formattedAppointmentID = formattedAppointmentID;
     }
 
     public Patient getPatient() {

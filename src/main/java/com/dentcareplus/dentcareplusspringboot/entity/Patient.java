@@ -23,9 +23,6 @@ public class Patient {
     )
     private Long patientID;
 
-    @Column(name = "formattedPatientID", length = 10)
-    private String formattedPatientID;
-
     @Column(name = "firstName", length = 50, nullable = false)
     private String firstName;
 
@@ -50,12 +47,6 @@ public class Patient {
     @Column(name = "createdDate", columnDefinition = "DATE DEFAULT CURRENT_DATE")
     private LocalDate createdDate = LocalDate.now();
 
-    // Automatically generate formattedPatientID after saving to the database
-    @PostPersist
-    private void generateFormattedPatientID() {
-        this.formattedPatientID = String.format("P%04d", this.patientID);
-    }
-
     // Getters and Setters
     public Long getPatientID() {
         return patientID;
@@ -63,14 +54,6 @@ public class Patient {
 
     public void setPatientID(Long patientID) {
         this.patientID = patientID;
-    }
-
-    public String getFormattedPatientID() {
-        return formattedPatientID;
-    }
-
-    public void setFormattedPatientID(String formattedPatientID) {
-        this.formattedPatientID = formattedPatientID;
     }
 
     public String getFirstName() {
