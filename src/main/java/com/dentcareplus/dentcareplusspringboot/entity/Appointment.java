@@ -38,13 +38,15 @@ public class Appointment {
     @Column(name = "reason", length = 255)
     private String reason;
 
-    @Column(name = "status", length = 50, nullable = false)
-    private String status = "Scheduled";  // Default status is "Scheduled"
+    @Column(name = "status")
+    private String status;
+
 
     @PostPersist
     private void generateFormattedAppointmentID() {
         this.formattedAppointmentID = String.format("A%04d", this.appointmentID);
     }
+
 
     // Getters and Setters
     public Long getAppointmentID() {
@@ -70,7 +72,7 @@ public class Appointment {
     public void setPatient(Patient patient) {
         this.patient = patient;
     }
-    
+
     public LocalDate getAppointmentDate() {
         return appointmentDate;
     }

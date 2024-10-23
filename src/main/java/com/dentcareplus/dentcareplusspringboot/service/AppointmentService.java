@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AppointmentService {
@@ -21,36 +20,52 @@ public class AppointmentService {
         this.patientRepository = patientRepository;
     }
 
+    // Create a new appointment with a valid patient ID
     public Appointment createAppointment(Long patientId, Appointment appointment) {
+        // Check if the patient exists
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new IllegalArgumentException("Patient with ID " + patientId + " not found."));
+
+        // Associate the patient with the appointment
         appointment.setPatient(patient);
         return appointmentRepository.save(appointment);
     }
 
+    // Get all appointments
     public List<Appointment> getAllAppointments() {
-        return appointmentRepository.findAll();
+        List<Appointment> appointments = appointmentRepository.findAll();
+        if (appointments.isEmpty()) {
+            throw new IllegalStateException("No appointments found.");
+        }
+        return appointments;
     }
 
+    // Get appointment by ID
     public Appointment getAppointmentById(Long id) {
         return appointmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Appointment with ID " + id + " not found."));
     }
 
+    // Update an existing appointment
     public Appointment updateAppointment(Long id, Appointment appointmentDetails) {
+        // Find the existing appointment
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Appointment with ID " + id + " not found."));
+
+        // Update appointment details
         appointment.setAppointmentDate(appointmentDetails.getAppointmentDate());
         appointment.setAppointmentTime(appointmentDetails.getAppointmentTime());
         appointment.setReason(appointmentDetails.getReason());
         appointment.setStatus(appointmentDetails.getStatus());
-        return appointmentRepository.save(appointment);
+
+        return appointmentRepository.save(appointment);  // Save and return the updated appointment
     }
 
+    // Delete an appointment by ID
     public boolean deleteAppointment(Long id) {
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Appointment with ID " + id + " not found."));
         appointmentRepository.delete(appointment);
-        return true;
+        return true;  // Return true if deletion is successful
     }
 }

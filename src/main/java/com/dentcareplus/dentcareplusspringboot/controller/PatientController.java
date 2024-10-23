@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/patients")
-@CrossOrigin(origins = "https://dental-clinic-management-system-fnvkt5lyc.vercel.app")
+@CrossOrigin(origins = "http://localhost:3000")
 public class PatientController {
     @Autowired
     private PatientService patientService;

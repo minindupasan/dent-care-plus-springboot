@@ -5,15 +5,15 @@ import com.dentcareplus.dentcareplusspringboot.entity.Patient;
 import com.dentcareplus.dentcareplusspringboot.service.AppointmentService;
 import com.dentcareplus.dentcareplusspringboot.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/appointments")
-@CrossOrigin(origins = "https://dental-clinic-management-system-fnvkt5lyc.vercel.app")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AppointmentController {
 
     @Autowired
@@ -26,18 +26,17 @@ public class AppointmentController {
     @PostMapping("/create/{patientId}")
     public ResponseEntity<Appointment> createAppointment(@PathVariable Long patientId, @RequestBody Appointment appointment) {
         // Retrieve the patient details using the patient ID
-        Optional<Patient> patient = Optional.ofNullable(patientService.getPatientById(patientId));
+        Patient patient = patientService.getPatientById(patientId);
 
         // Check if the patient exists
-        if (!patient.isPresent()) {
-            return ResponseEntity.notFound().build(); // Return 404 if patient not found
+        if (patient == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Return 404 if patient not found
         }
 
         // Create the appointment by passing the patient details from the Patient table
         Appointment newAppointment = appointmentService.createAppointment(patientId, appointment);
-        return ResponseEntity.ok(newAppointment); // Return 200 OK with the new appointment
+        return ResponseEntity.status(HttpStatus.CREATED).body(newAppointment); // Return 201 Created with the new appointment
     }
-
 
     // GET request to get all appointments
     @GetMapping
@@ -45,7 +44,7 @@ public class AppointmentController {
         List<Appointment> appointments = appointmentService.getAllAppointments();
 
         if (appointments.isEmpty()) {
-            return ResponseEntity.noContent().build(); // Return 204 No Content if no appointments are found
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // Return 204 No Content if no appointments are found
         }
 
         return ResponseEntity.ok(appointments); // Return 200 OK with the list of appointments
@@ -54,33 +53,42 @@ public class AppointmentController {
     // GET request to get a specific appointment by ID
     @GetMapping("/{appointmentId}")
     public ResponseEntity<Appointment> getAppointmentById(@PathVariable Long appointmentId) {
-        Optional<Appointment> appointment = Optional.ofNullable(appointmentService.getAppointmentById(appointmentId));
+        Appointment appointment = appointmentService.getAppointmentById(appointmentId);
 
-        return appointment.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build()); // Return 404 Not Found if appointment doesn't exist
+        if (appointment == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Return 404 Not Found if appointment doesn't exist
+        }
+
+        return ResponseEntity.ok(appointment); // Return 200 OK with the appointment
     }
 
     // PUT request to edit an appointment
-    @PutMapping("update/{appointmentId}")
+    @PutMapping("/update/{appointmentId}")
     public ResponseEntity<Appointment> editAppointment(@PathVariable Long appointmentId, @RequestBody Appointment appointmentDetails) {
-        Optional<Appointment> updatedAppointment = Optional.ofNullable(appointmentService.updateAppointment(appointmentId, appointmentDetails));
+        Appointment updatedAppointment = appointmentService.updateAppointment(appointmentId, appointmentDetails);
 
-        return updatedAppointment.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build()); // Return 404 Not Found if appointment doesn't exist
+        if (updatedAppointment == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Return 404 Not Found if appointment doesn't exist
+        }
+
+        return ResponseEntity.ok(updatedAppointment); // Return 200 OK with the updated appointment
     }
 
     // DELETE request to delete an appointment
-    @DeleteMapping("delete/{appointmentId}")
+    @DeleteMapping("/delete/{appointmentId}")
     public ResponseEntity<Void> deleteAppointment(@PathVariable Long appointmentId) {
-        Optional<Appointment> appointment = Optional.ofNullable(appointmentService.getAppointmentById(appointmentId));
+        Appointment appointment = appointmentService.getAppointmentById(appointmentId);
 
-        if (appointment.isPresent()) {
-            boolean isDeleted = appointmentService.deleteAppointment(appointmentId);
-            if (isDeleted) {
-                return ResponseEntity.noContent().build(); // Return 204 No Content if successfully deleted
-            }
+        if (appointment == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Return 404 Not Found if appointment doesn't exist
         }
 
-        return ResponseEntity.notFound().build(); // Return 404 Not Found if appointment doesn't exist
+        boolean isDeleted = appointmentService.deleteAppointment(appointmentId);
+        if (isDeleted) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // Return 204 No Content if successfully deleted
+        }
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // Return 500 if something went wrong during deletion
     }
+
 }
