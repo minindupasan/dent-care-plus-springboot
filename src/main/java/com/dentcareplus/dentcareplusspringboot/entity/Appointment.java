@@ -6,9 +6,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
-@Table(name = "appointment", uniqueConstraints = {
-        @UniqueConstraint(name = "formatted_appointment_id_unique", columnNames = "formattedAppointmentID")
-})
 public class Appointment {
     @Id
     @SequenceGenerator(
@@ -26,10 +23,10 @@ public class Appointment {
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
 
-    @Column(name = "appointmentDate", nullable = false)
+    @Column(name = "appointment_date", nullable = false)
     private LocalDate appointmentDate;
 
-    @Column(name = "appointmentTime", nullable = false)
+    @Column(name = "appointment_time", nullable = false)
     private LocalTime appointmentTime;
 
     @Column(name = "reason", length = 255)

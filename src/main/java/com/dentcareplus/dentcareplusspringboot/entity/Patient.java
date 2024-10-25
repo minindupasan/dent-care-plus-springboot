@@ -6,9 +6,7 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "patient", uniqueConstraints = {
-        @UniqueConstraint(name = "email_unique", columnNames = "email"),
-        @UniqueConstraint(name = "contact_number_unique", columnNames = "contactNo"),
-        @UniqueConstraint(name = "formatted_patient_id_unique", columnNames = "formattedPatientID")
+        @UniqueConstraint(name = "email_unique", columnNames = "email")
 })
 public class Patient {
     @Id
@@ -23,29 +21,36 @@ public class Patient {
     )
     private Long patientID;
 
-    @Column(name = "firstName", length = 50, nullable = false)
+    @Column(name = "first_name", length = 50, nullable = false)
     private String firstName;
 
-    @Column(name = "lastName", length = 50, nullable = false)
+    @Column(name = "last_name", length = 50, nullable = false)
     private String lastName;
 
     @Column(name = "email", length = 100, nullable = false)
     private String email;
 
-    @Column(name = "contactNo", length = 12, nullable = false)
+    @Column(name = "contact_no", length = 12, nullable = false)
     private String contactNo;
 
     @Column(name = "gender", length = 20, nullable = false)
     private String gender;
 
-    @Column(name = "medicalRecords", columnDefinition = "TEXT")
+    @Column(name = "medical_records", columnDefinition = "TEXT")
     private String medicalRecords;
 
     @Column(name = "dob", nullable = false)
     private LocalDate dob;
 
-    @Column(name = "createdDate", columnDefinition = "DATE DEFAULT CURRENT_DATE")
-    private LocalDate createdDate = LocalDate.now();
+    @Column(name = "created_date", nullable = false)
+    private LocalDate createdDate;
+
+    @PrePersist
+    protected void onCreate() {
+        if (this.createdDate == null) {
+            this.createdDate = LocalDate.now();
+        }
+    }
 
     // Getters and Setters
     public Long getPatientID() {
