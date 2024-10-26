@@ -36,9 +36,6 @@ public class Patient {
     @Column(name = "gender", length = 20, nullable = false)
     private String gender;
 
-    @Column(name = "medical_records", columnDefinition = "TEXT")
-    private String medicalRecords;
-
     @Column(name = "dob", nullable = false)
     private LocalDate dob;
 
@@ -100,15 +97,7 @@ public class Patient {
     public void setGender(String gender) {
         this.gender = gender;
     }
-
-    public String getMedicalRecords() {
-        return medicalRecords;
-    }
-
-    public void setMedicalRecords(String medicalRecords) {
-        this.medicalRecords = medicalRecords;
-    }
-
+    
     public LocalDate getDob() {
         return dob;
     }

@@ -56,7 +56,6 @@ public class PatientService {
             patient.setEmail(patientDetails.getEmail());
             patient.setGender(patientDetails.getGender());
             patient.setDob(patientDetails.getDob());
-            patient.setMedicalRecords(patientDetails.getMedicalRecords());
             patient.setCreatedDate(patientDetails.getCreatedDate());
             Patient updatedPatient = patientRepository.save(patient);
             System.out.println("Updated Patient ID: " + updatedPatient.getPatientID()); // Log formatted ID
