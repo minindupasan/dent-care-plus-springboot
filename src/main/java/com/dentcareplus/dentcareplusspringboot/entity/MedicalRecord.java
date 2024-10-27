@@ -18,7 +18,7 @@ public class MedicalRecord {
     private Long recordID;
 
     @OneToOne
-    @JoinColumn(name = "patient_id", nullable = false)
+    @JoinColumn(name = "patient_id", nullable = false, unique = true)
     private Patient patient;
 
     @Column(name = "blood_type", nullable = false)
