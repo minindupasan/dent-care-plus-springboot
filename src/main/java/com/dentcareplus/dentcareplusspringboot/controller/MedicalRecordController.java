@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/medical-records")
-@CrossOrigin(origins = {"http://localhost:3000", "https://dental-clinic-management-system-five.vercel.app"})
+@CrossOrigin(origins = "https://dental-clinic-management-system-five.vercel.app")
 public class MedicalRecordController {
 
     @Autowired
