@@ -39,15 +39,15 @@ public class MedicalRecordService {
     }
 
     // Get medical record by ID
-    public MedicalRecord getMedicalRecordById(Long id) {
-        return medicalRecordRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Medical record with ID " + id + " not found."));
+    public MedicalRecord getMedicalRecordByPatientId(Long patientId) {
+        return medicalRecordRepository.findById(patientId)
+                .orElseThrow(() -> new IllegalArgumentException("Medical record with ID " + patientId + " not found."));
     }
 
     // Update an existing medical record
-    public MedicalRecord updateMedicalRecord(Long id, MedicalRecord medicalRecordDetails) {
-        MedicalRecord medicalRecord = medicalRecordRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Medical record with ID " + id + " not found."));
+    public MedicalRecord updateMedicalRecord(Long patientId, MedicalRecord medicalRecordDetails) {
+        MedicalRecord medicalRecord = medicalRecordRepository.findById(patientId)
+                .orElseThrow(() -> new IllegalArgumentException("Medical record with ID " + patientId + " not found."));
 
         medicalRecord.setBloodType(medicalRecordDetails.getBloodType());
         medicalRecord.setDiabetes(medicalRecordDetails.getDiabetes());
@@ -75,9 +75,9 @@ public class MedicalRecordService {
     }
 
     // Delete a medical record by ID
-    public boolean deleteMedicalRecord(Long id) {
-        MedicalRecord medicalRecord = medicalRecordRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Medical record with ID " + id + " not found."));
+    public boolean deleteMedicalRecord(Long patientId) {
+        MedicalRecord medicalRecord = medicalRecordRepository.findById(patientId)
+                .orElseThrow(() -> new IllegalArgumentException("Medical record with ID " + patientId + " not found."));
         medicalRecordRepository.delete(medicalRecord);
         return true;
     }

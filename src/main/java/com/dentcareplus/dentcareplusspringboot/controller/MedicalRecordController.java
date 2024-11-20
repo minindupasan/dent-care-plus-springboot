@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/medical-records")
-@CrossOrigin(origins = "https://dental-clinic-management-system-five.vercel.app")
+@CrossOrigin(origins = {"https://dental-clinic-management-system-five.vercel.app", "http://localhost:3000"})
 public class MedicalRecordController {
 
     @Autowired
@@ -48,9 +48,9 @@ public class MedicalRecordController {
     }
 
     // GET request to get a specific medical record by ID
-    @GetMapping("/{recordId}")
-    public ResponseEntity<MedicalRecord> getMedicalRecordById(@PathVariable Long recordId) {
-        MedicalRecord medicalRecord = medicalRecordService.getMedicalRecordById(recordId);
+    @GetMapping("/{patientId}")
+    public ResponseEntity<MedicalRecord> getMedicalRecordById(@PathVariable Long patientId) {
+        MedicalRecord medicalRecord = medicalRecordService.getMedicalRecordByPatientId(patientId);
 
         if (medicalRecord == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -72,15 +72,15 @@ public class MedicalRecordController {
     }
 
     // DELETE request to delete a medical record
-    @DeleteMapping("/delete/{recordId}")
-    public ResponseEntity<Void> deleteMedicalRecord(@PathVariable Long recordId) {
-        MedicalRecord medicalRecord = medicalRecordService.getMedicalRecordById(recordId);
+    @DeleteMapping("/delete/{patientId}")
+    public ResponseEntity<Void> deleteMedicalRecord(@PathVariable Long patientId) {
+        MedicalRecord medicalRecord = medicalRecordService.getMedicalRecordByPatientId(patientId);
 
         if (medicalRecord == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        boolean isDeleted = medicalRecordService.deleteMedicalRecord(recordId);
+        boolean isDeleted = medicalRecordService.deleteMedicalRecord(patientId);
         if (isDeleted) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
