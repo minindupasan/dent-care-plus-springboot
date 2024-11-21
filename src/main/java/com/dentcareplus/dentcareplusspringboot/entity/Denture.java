@@ -1,7 +1,6 @@
 package com.dentcareplus.dentcareplusspringboot.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -21,6 +20,7 @@ public class Denture {
             strategy = GenerationType.SEQUENCE,
             generator = "denture_sequence"
     )
+    @Column(name = "denture_id")
     private Long dentureId; // Primary Key
 
     // Relationship with Patient
@@ -29,44 +29,36 @@ public class Denture {
     private Patient patient;
 
     // Denture Details
-    @Column(nullable = false)
-    @NotBlank(message = "Denture type is required")
+    @Column(name = "denture_type", nullable = false)
     private String dentureType;
 
-    @Column(nullable = false)
-    @NotBlank(message = "Material type is required")
+    @Column(name = "material_type", nullable = false)
     private String materialType; // e.g., Acrylic, Metal
 
-    @PastOrPresent(message = "Trial denture date cannot be in the future")
+    @Column(name = "trial_denture_date")
     private LocalDate trialDentureDate;
 
-    @Future(message = "Estimated delivery date must be in the future")
+    @Column(name = "estimated_delivery_date")
     private LocalDate estimatedDeliveryDate;
 
-    @PastOrPresent(message = "Received date cannot be in the future")
-    private LocalDate receivedDate;
+    @Column(name = "received_date")
+    private LocalDate receivedDate; // Nullable
 
-    @Column(nullable = false)
-    @NotBlank(message = "Delivery status is required")
-    @Pattern(regexp = "^(In Progress|Delivered|Pending|Canceled)$",
-            message = "Invalid delivery status")
-    private String deliveryStatus;
+    @Column(name = "delivery_status")
+    private String deliveryStatus; // Nullable
 
-    @Column(length = 500)
-    @Size(max = 500, message = "Remarks cannot exceed 500 characters")
+    @Column(name = "remarks", length = 500)
     private String remarks;
 
-    @Min(value = 0, message = "Cost cannot be negative")
+    @Column(name = "cost")
     private Double cost;
 
-    @Column(nullable = false)
-    @NotBlank(message = "Payment status is required")
-    @Pattern(regexp = "^(Paid|Pending)$", message = "Invalid payment status")
-    private String paymentStatus;
+    @Column(name = "payment_status")
+    private String paymentStatus; // Nullable
 
-    @NotBlank(message = "Lab name is required")
+    @Column(name = "lab_name", nullable = false)
     private String labName;
 
-    @PastOrPresent(message = "Ordered date cannot be in the future")
-    private LocalDate orderedDate;
+    @Column(name = "ordered_date")
+    private LocalDate orderedDate; // Nullable
 }
