@@ -30,7 +30,7 @@ public class Denture {
     // Denture Details
     @Column(nullable = false)
     @NotBlank(message = "Denture type is required")
-    private String dentureType; // e.g., Full, Partial
+    private String dentureType;
 
     @Column(nullable = false)
     @NotBlank(message = "Material type is required")
