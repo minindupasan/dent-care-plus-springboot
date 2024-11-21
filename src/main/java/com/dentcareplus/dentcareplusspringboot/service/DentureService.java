@@ -59,7 +59,7 @@ public class DentureService {
         denture.setCost(dentureDetails.getCost());
         denture.setPaymentStatus(dentureDetails.getPaymentStatus());
         denture.setLabName(dentureDetails.getLabName());
-        denture.setOrderDateToLab(dentureDetails.getOrderDateToLab());
+        denture.setOrderedDate(dentureDetails.getOrderedDate());
 
         return dentureRepository.save(denture);
     }

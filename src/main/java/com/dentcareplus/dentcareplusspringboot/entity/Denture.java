@@ -7,6 +7,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "denture_record")
 @Data
 public class Denture {
 
@@ -66,6 +67,6 @@ public class Denture {
     @NotBlank(message = "Lab name is required")
     private String labName;
 
-    @PastOrPresent(message = "Order date to lab cannot be in the future")
-    private LocalDate orderDateToLab;
+    @PastOrPresent(message = "Ordered date cannot be in the future")
+    private LocalDate orderedDate;
 }

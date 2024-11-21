@@ -1,6 +1,7 @@
 package com.dentcareplus.dentcareplusspringboot.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDate;
 
@@ -8,6 +9,7 @@ import java.time.LocalDate;
 @Table(name = "patient", uniqueConstraints = {
         @UniqueConstraint(name = "email_unique", columnNames = "email")
 })
+@Data
 public class Patient {
     @Id
     @SequenceGenerator(
@@ -47,70 +49,5 @@ public class Patient {
         if (this.createdDate == null) {
             this.createdDate = LocalDate.now();
         }
-    }
-
-    // Getters and Setters
-    public Long getPatientID() {
-        return patientID;
-    }
-
-    public void setPatientID(Long patientID) {
-        this.patientID = patientID;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getContactNo() {
-        return contactNo;
-    }
-
-    public void setContactNo(String contactNo) {
-        this.contactNo = contactNo;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-    
-    public LocalDate getDob() {
-        return dob;
-    }
-
-    public void setDob(LocalDate dob) {
-        this.dob = dob;
-    }
-
-    public LocalDate getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(LocalDate createdDate) {
-        this.createdDate = createdDate;
     }
 }
