@@ -10,6 +10,7 @@ import java.time.LocalTime;
 @Table(name = "appointment")
 @Data
 public class Appointment {
+
     @Id
     @SequenceGenerator(
             name = "appointment_sequence",
@@ -20,6 +21,7 @@ public class Appointment {
             strategy = GenerationType.SEQUENCE,
             generator = "appointment_sequence"
     )
+    @Column(name = "appointment_id")
     private Long appointmentID;
 
     @ManyToOne
