@@ -25,20 +25,17 @@ public class AppointmentController {
 
     @GetMapping
     public ResponseEntity<List<AppointmentDTO>> getAllAppointments() {
-        List<AppointmentDTO> appointments = appointmentService.getAllAppointments();
-        return ResponseEntity.ok(appointments);
+        return ResponseEntity.ok(appointmentService.getAllAppointments());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<AppointmentDTO> getAppointmentById(@PathVariable Long id) {
-        AppointmentDTO appointment = appointmentService.getAppointmentById(id);
-        return ResponseEntity.ok(appointment);
+        return ResponseEntity.ok(appointmentService.getAppointmentById(id));
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<AppointmentDTO> updateAppointment(@PathVariable Long id, @RequestBody Appointment appointmentDetails) {
-        AppointmentDTO updatedAppointment = appointmentService.updateAppointment(id, appointmentDetails);
-        return ResponseEntity.ok(updatedAppointment);
+        return ResponseEntity.ok(appointmentService.updateAppointment(id, appointmentDetails));
     }
 
     @DeleteMapping("/delete/{id}")

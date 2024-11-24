@@ -11,7 +11,15 @@ import java.time.LocalDate;
 @Data
 public class Treatment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "treatment_sequence",
+            sequenceName = "treatment_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "treatment_sequence"
+    )
     private Long treatmentID;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
