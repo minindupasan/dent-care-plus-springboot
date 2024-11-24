@@ -22,7 +22,7 @@ public class Appointment {
     )
     private Long appointmentID;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
 
@@ -37,4 +37,7 @@ public class Appointment {
 
     @Column(name = "status", nullable = false)
     private String status = "Scheduled";
+
+    @OneToOne(mappedBy = "appointment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Treatment treatment;
 }

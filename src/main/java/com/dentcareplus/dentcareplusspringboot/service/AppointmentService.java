@@ -1,13 +1,16 @@
 package com.dentcareplus.dentcareplusspringboot.service;
 
+import com.dentcareplus.dentcareplusspringboot.dto.AppointmentDTO;
 import com.dentcareplus.dentcareplusspringboot.entity.Appointment;
 import com.dentcareplus.dentcareplusspringboot.entity.Patient;
+import com.dentcareplus.dentcareplusspringboot.entity.Treatment;
 import com.dentcareplus.dentcareplusspringboot.repository.AppointmentRepository;
 import com.dentcareplus.dentcareplusspringboot.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AppointmentService {
@@ -20,52 +23,81 @@ public class AppointmentService {
         this.patientRepository = patientRepository;
     }
 
-    // Create a new appointment with a valid patient ID
-    public Appointment createAppointment(Long patientId, Appointment appointment) {
-        // Check if the patient exists
+    public AppointmentDTO createAppointment(Long patientId, Appointment appointment) {
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new IllegalArgumentException("Patient with ID " + patientId + " not found."));
 
-        // Associate the patient with the appointment
         appointment.setPatient(patient);
-        return appointmentRepository.save(appointment);
-    }
 
-    // Get all appointments
-    public List<Appointment> getAllAppointments() {
-        List<Appointment> appointments = appointmentRepository.findAll();
-        if (appointments.isEmpty()) {
-            throw new IllegalStateException("No appointments found.");
+        if (appointment.getTreatment() != null) {
+            Treatment treatment = appointment.getTreatment();
+            treatment.setAppointment(appointment);
         }
-        return appointments;
+
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+
+        // Convert Appointment entity to AppointmentDTO before returning
+        return new AppointmentDTO(
+                savedAppointment.getAppointmentID(),
+                savedAppointment.getPatient().getPatientID(),
+                savedAppointment.getAppointmentDate(),
+                savedAppointment.getAppointmentTime(),
+                savedAppointment.getReason(),
+                savedAppointment.getStatus()
+        );
     }
 
-    // Get appointment by ID
-    public Appointment getAppointmentById(Long id) {
-        return appointmentRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Appointment with ID " + id + " not found."));
+    public List<AppointmentDTO> getAllAppointments() {
+        List<Appointment> appointments = appointmentRepository.findAll();
+        return appointments.stream()
+                .map(appointment -> new AppointmentDTO(
+                        appointment.getAppointmentID(),
+                        appointment.getPatient().getPatientID(),
+                        appointment.getAppointmentDate(),
+                        appointment.getAppointmentTime(),
+                        appointment.getReason(),
+                        appointment.getStatus()))
+                .collect(Collectors.toList());
     }
 
-    // Update an existing appointment
-    public Appointment updateAppointment(Long id, Appointment appointmentDetails) {
-        // Find the existing appointment
+    public AppointmentDTO getAppointmentById(Long id) {
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Appointment with ID " + id + " not found."));
 
-        // Update appointment details
+        return new AppointmentDTO(
+                appointment.getAppointmentID(),
+                appointment.getPatient().getPatientID(),
+                appointment.getAppointmentDate(),
+                appointment.getAppointmentTime(),
+                appointment.getReason(),
+                appointment.getStatus()
+        );
+    }
+
+    public AppointmentDTO updateAppointment(Long id, Appointment appointmentDetails) {
+        Appointment appointment = appointmentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Appointment with ID " + id + " not found."));
+
         appointment.setAppointmentDate(appointmentDetails.getAppointmentDate());
         appointment.setAppointmentTime(appointmentDetails.getAppointmentTime());
         appointment.setReason(appointmentDetails.getReason());
         appointment.setStatus(appointmentDetails.getStatus());
 
-        return appointmentRepository.save(appointment);  // Save and return the updated appointment
+        Appointment updatedAppointment = appointmentRepository.save(appointment);
+
+        return new AppointmentDTO(
+                updatedAppointment.getAppointmentID(),
+                updatedAppointment.getPatient().getPatientID(),
+                updatedAppointment.getAppointmentDate(),
+                updatedAppointment.getAppointmentTime(),
+                updatedAppointment.getReason(),
+                updatedAppointment.getStatus()
+        );
     }
 
-    // Delete an appointment by ID
-    public boolean deleteAppointment(Long id) {
+    public void deleteAppointment(Long id) {
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Appointment with ID " + id + " not found."));
         appointmentRepository.delete(appointment);
-        return true;  // Return true if deletion is successful
     }
 }
