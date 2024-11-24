@@ -1,11 +1,14 @@
 package com.dentcareplus.dentcareplusspringboot.service;
 
+import com.dentcareplus.dentcareplusspringboot.dto.InventoryDTO;
 import com.dentcareplus.dentcareplusspringboot.entity.Inventory;
 import com.dentcareplus.dentcareplusspringboot.repository.InventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class InventoryService {
@@ -18,27 +21,27 @@ public class InventoryService {
     }
 
     // Create a new inventory item
-    public Inventory createInventoryItem(Inventory inventory) {
-        return inventoryRepository.save(inventory);
+    public InventoryDTO createInventoryItem(Inventory inventory) {
+        Inventory savedInventory = inventoryRepository.save(inventory);
+        return mapToDTO(savedInventory);
     }
 
     // Get all inventory items
-    public List<Inventory> getAllInventoryItems() {
-        List<Inventory> inventoryItems = inventoryRepository.findAll();
-        if (inventoryItems.isEmpty()) {
-            throw new IllegalStateException("No inventory items found.");
-        }
-        return inventoryItems;
+    public List<InventoryDTO> getAllInventoryItems() {
+        return inventoryRepository.findAll().stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
     // Get inventory item by ID
-    public Inventory getInventoryItemById(Long inventoryId) {
-        return inventoryRepository.findById(inventoryId)
+    public InventoryDTO getInventoryItemById(Long inventoryId) {
+        Inventory inventory = inventoryRepository.findById(inventoryId)
                 .orElseThrow(() -> new IllegalArgumentException("Inventory item with ID " + inventoryId + " not found."));
+        return mapToDTO(inventory);
     }
 
     // Update an existing inventory item
-    public Inventory updateInventoryItem(Long inventoryId, Inventory inventoryDetails) {
+    public InventoryDTO updateInventoryItem(Long inventoryId, Inventory inventoryDetails) {
         Inventory inventory = inventoryRepository.findById(inventoryId)
                 .orElseThrow(() -> new IllegalArgumentException("Inventory item with ID " + inventoryId + " not found."));
 
@@ -52,14 +55,30 @@ public class InventoryService {
         inventory.setTotalCost(inventoryDetails.getTotalCost());
         inventory.setLastUpdated(inventoryDetails.getLastUpdated());
 
-        return inventoryRepository.save(inventory);
+        Inventory updatedInventory = inventoryRepository.save(inventory);
+        return mapToDTO(updatedInventory);
     }
 
     // Delete an inventory item by ID
-    public boolean deleteInventoryItem(Long inventoryId) {
+    public void deleteInventoryItem(Long inventoryId) {
         Inventory inventory = inventoryRepository.findById(inventoryId)
                 .orElseThrow(() -> new IllegalArgumentException("Inventory item with ID " + inventoryId + " not found."));
         inventoryRepository.delete(inventory);
-        return true;
+    }
+
+    // Helper method to map Inventory entity to InventoryDTO
+    private InventoryDTO mapToDTO(Inventory inventory) {
+        InventoryDTO dto = new InventoryDTO();
+        dto.setInventoryId(inventory.getInventoryId());
+        dto.setItemName(inventory.getItemName());
+        dto.setQuantity(inventory.getQuantity());
+        dto.setStatusLevel(inventory.getStatusLevel());
+        dto.setRestockLevel(inventory.getRestockLevel());
+        dto.setPurchaseDate(inventory.getPurchaseDate());
+        dto.setExpiryDate(inventory.getExpiryDate());
+        dto.setUnitCost(BigDecimal.valueOf(inventory.getUnitCost()));
+        dto.setTotalCost(BigDecimal.valueOf(inventory.getTotalCost()));
+        dto.setLastUpdated(inventory.getLastUpdated());
+        return dto;
     }
 }
