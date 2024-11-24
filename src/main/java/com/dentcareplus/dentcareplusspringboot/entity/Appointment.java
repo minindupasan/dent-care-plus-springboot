@@ -37,4 +37,8 @@ public class Appointment {
 
     @Column(name = "status", nullable = false)
     private String status = "Scheduled";
+
+    // Foreign key relationship with Treatment
+    @OneToOne(mappedBy = "appointment", cascade = CascadeType.ALL)
+    private Treatment treatment;
 }
