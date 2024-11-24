@@ -41,13 +41,7 @@ public class Patient {
     @Column(name = "dob", nullable = false)
     private LocalDate dob;
 
-    @Column(name = "created_date", nullable = false)
-    private LocalDate createdDate;
+    @Column(name = "created_date")
+    private LocalDate createdDate = LocalDate.now();
 
-    @PrePersist
-    protected void onCreate() {
-        if (this.createdDate == null) {
-            this.createdDate = LocalDate.now();
-        }
-    }
 }
