@@ -11,6 +11,7 @@ import java.util.List;
 
 @Service
 public class MedicalRecordService {
+
     private final MedicalRecordRepository medicalRecordRepository;
     private final PatientRepository patientRepository;
 
@@ -20,35 +21,34 @@ public class MedicalRecordService {
         this.patientRepository = patientRepository;
     }
 
-    // Create a new medical record for a valid patient ID
-    public MedicalRecord createMedicalRecord(Long patientId, MedicalRecord medicalRecord) {
+    // Create or update a medical record for a valid patient ID
+    public MedicalRecord createOrUpdateMedicalRecord(Long patientId, MedicalRecord medicalRecord) {
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new IllegalArgumentException("Patient with ID " + patientId + " not found."));
-
         medicalRecord.setPatient(patient);
+
         return medicalRecordRepository.save(medicalRecord);
     }
 
     // Get all medical records
     public List<MedicalRecord> getAllMedicalRecords() {
-        List<MedicalRecord> medicalRecords = medicalRecordRepository.findAll();
-        if (medicalRecords.isEmpty()) {
-            throw new IllegalStateException("No medical records found.");
-        }
-        return medicalRecords;
+        return medicalRecordRepository.findAll();
     }
 
-    // Get medical record by ID
+    // Get medical record by patient ID
     public MedicalRecord getMedicalRecordByPatientId(Long patientId) {
-        return medicalRecordRepository.findById(patientId)
-                .orElseThrow(() -> new IllegalArgumentException("Medical record with ID " + patientId + " not found."));
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new IllegalArgumentException("Patient with ID " + patientId + " not found."));
+        return medicalRecordRepository.findByPatient(patient)
+                .orElseThrow(() -> new IllegalArgumentException("Medical record for patient with ID " + patientId + " not found."));
     }
 
-    // Update an existing medical record
-    public MedicalRecord updateMedicalRecord(Long patientId, MedicalRecord medicalRecordDetails) {
-        MedicalRecord medicalRecord = medicalRecordRepository.findById(patientId)
-                .orElseThrow(() -> new IllegalArgumentException("Medical record with ID " + patientId + " not found."));
+    // Update a medical record
+    public MedicalRecord updateMedicalRecord(Long recordId, MedicalRecord medicalRecordDetails) {
+        MedicalRecord medicalRecord = medicalRecordRepository.findById(recordId)
+                .orElseThrow(() -> new IllegalArgumentException("Medical record with ID " + recordId + " not found."));
 
+        // Update all fields
         medicalRecord.setBloodType(medicalRecordDetails.getBloodType());
         medicalRecord.setDiabetes(medicalRecordDetails.getDiabetes());
         medicalRecord.setHypertension(medicalRecordDetails.getHypertension());
@@ -75,10 +75,9 @@ public class MedicalRecordService {
     }
 
     // Delete a medical record by ID
-    public boolean deleteMedicalRecord(Long patientId) {
-        MedicalRecord medicalRecord = medicalRecordRepository.findById(patientId)
-                .orElseThrow(() -> new IllegalArgumentException("Medical record with ID " + patientId + " not found."));
+    public void deleteMedicalRecord(Long recordId) {
+        MedicalRecord medicalRecord = medicalRecordRepository.findById(recordId)
+                .orElseThrow(() -> new IllegalArgumentException("Medical record with ID " + recordId + " not found."));
         medicalRecordRepository.delete(medicalRecord);
-        return true;
     }
 }
