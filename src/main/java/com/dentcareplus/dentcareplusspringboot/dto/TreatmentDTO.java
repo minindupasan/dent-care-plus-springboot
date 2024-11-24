@@ -14,9 +14,11 @@ public class TreatmentDTO {
     private LocalDate endDate;
     private Double totalPaid;
     private Double dueAmount;
+    private String paymentStatus;
+    private String treatmentStatus;
     private String notes;
-    
-    public TreatmentDTO(Long treatmentID, String treatmentType, LocalDate startDate, LocalDate endDate, Double totalPaid, Double dueAmount, String notes, Long appointmentID) {
+
+    public TreatmentDTO(Long treatmentID, String treatmentType, LocalDate startDate, LocalDate endDate, Double totalPaid, Double dueAmount, String paymentStatus, String treatmentStatus, String notes, Long appointmentID) {
         this.treatmentID = treatmentID;
         this.appointmentID = appointmentID;
         this.treatmentType = treatmentType;
@@ -24,6 +26,8 @@ public class TreatmentDTO {
         this.endDate = endDate;
         this.totalPaid = totalPaid;
         this.dueAmount = dueAmount;
+        this.paymentStatus = paymentStatus;
+        this.treatmentStatus = treatmentStatus;
         this.notes = notes;
     }
 }

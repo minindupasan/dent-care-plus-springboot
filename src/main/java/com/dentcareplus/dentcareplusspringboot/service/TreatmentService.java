@@ -31,6 +31,8 @@ public class TreatmentService {
                         treatment.getEndDate(),
                         treatment.getTotalPaid(),
                         treatment.getDueAmount(),
+                        treatment.getPaymentStatus(),
+                        treatment.getTreatmentStatus(),
                         treatment.getNotes(),
                         treatment.getAppointmentID()))  // Mapping the appointment ID
                 .collect(Collectors.toList());
@@ -48,6 +50,8 @@ public class TreatmentService {
                 treatment.getEndDate(),
                 treatment.getTotalPaid(),
                 treatment.getDueAmount(),
+                treatment.getPaymentStatus(),
+                treatment.getTreatmentStatus(),
                 treatment.getNotes(),
                 treatment.getAppointmentID());  // Mapping the appointment ID
     }
@@ -68,6 +72,8 @@ public class TreatmentService {
         existingTreatment.setEndDate(treatmentDTO.getEndDate());
         existingTreatment.setTotalPaid(treatmentDTO.getTotalPaid());
         existingTreatment.setDueAmount(treatmentDTO.getDueAmount());
+        existingTreatment.setPaymentStatus(treatmentDTO.getPaymentStatus());
+        existingTreatment.setTreatmentStatus(treatmentDTO.getTreatmentStatus());
         existingTreatment.setNotes(treatmentDTO.getNotes());
 
         // Save updated treatment
@@ -80,6 +86,8 @@ public class TreatmentService {
                 updatedTreatment.getEndDate(),
                 updatedTreatment.getTotalPaid(),
                 updatedTreatment.getDueAmount(),
+                updatedTreatment.getPaymentStatus(),
+                updatedTreatment.getTreatmentStatus(),
                 updatedTreatment.getNotes(),
                 updatedTreatment.getAppointmentID());
     }

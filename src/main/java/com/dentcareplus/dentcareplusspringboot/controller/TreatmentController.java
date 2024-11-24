@@ -43,7 +43,7 @@ public class TreatmentController {
     }
 
     // PUT request to update a treatment by ID
-    @PutMapping("/{treatmentId}")
+    @PutMapping("/update/{treatmentId}")
     public ResponseEntity<TreatmentDTO> updateTreatment(
             @PathVariable Long treatmentId,
             @RequestBody TreatmentDTO treatmentDTO) {
@@ -57,7 +57,7 @@ public class TreatmentController {
     }
 
     // DELETE request to delete a treatment by ID
-    @DeleteMapping("/{treatmentId}")
+    @DeleteMapping("/delete/{treatmentId}")
     public ResponseEntity<Void> deleteTreatment(@PathVariable Long treatmentId) {
         boolean deleted = treatmentService.deleteTreatment(treatmentId);
 

@@ -23,7 +23,7 @@ public class Treatment {
     private String treatmentType;
 
     @Column(name = "start_date")
-    private LocalDate startDate;
+    private LocalDate startDate = LocalDate.now();
 
     @Column(name = "end_date")
     private LocalDate endDate;
@@ -33,6 +33,12 @@ public class Treatment {
 
     @Column(name = "due_amount")
     private Double dueAmount;
+
+    @Column(name = "payment_status")
+    private String paymentStatus = "Pending";
+
+    @Column(name = "treatment_status")
+    private String treatmentStatus = "In Progress";
 
     @Column(name = "notes", length = 500)
     private String notes;
