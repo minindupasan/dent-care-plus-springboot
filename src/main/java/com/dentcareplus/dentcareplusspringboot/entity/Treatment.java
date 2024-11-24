@@ -1,3 +1,4 @@
+
 package com.dentcareplus.dentcareplusspringboot.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
