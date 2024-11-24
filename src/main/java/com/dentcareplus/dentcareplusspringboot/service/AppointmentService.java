@@ -40,6 +40,8 @@ public class AppointmentService {
         return new AppointmentDTO(
                 savedAppointment.getAppointmentID(),
                 savedAppointment.getPatient().getPatientID(),
+                savedAppointment.getPatient().getFirstName(),
+                savedAppointment.getPatient().getLastName(),
                 savedAppointment.getAppointmentDate(),
                 savedAppointment.getAppointmentTime(),
                 savedAppointment.getReason(),
@@ -53,6 +55,8 @@ public class AppointmentService {
                 .map(appointment -> new AppointmentDTO(
                         appointment.getAppointmentID(),
                         appointment.getPatient().getPatientID(),
+                        appointment.getPatient().getFirstName(),
+                        appointment.getPatient().getLastName(),
                         appointment.getAppointmentDate(),
                         appointment.getAppointmentTime(),
                         appointment.getReason(),
@@ -67,6 +71,8 @@ public class AppointmentService {
         return new AppointmentDTO(
                 appointment.getAppointmentID(),
                 appointment.getPatient().getPatientID(),
+                appointment.getPatient().getFirstName(),
+                appointment.getPatient().getLastName(),
                 appointment.getAppointmentDate(),
                 appointment.getAppointmentTime(),
                 appointment.getReason(),
@@ -88,6 +94,8 @@ public class AppointmentService {
         return new AppointmentDTO(
                 updatedAppointment.getAppointmentID(),
                 updatedAppointment.getPatient().getPatientID(),
+                updatedAppointment.getPatient().getFirstName(),
+                updatedAppointment.getPatient().getLastName(),
                 updatedAppointment.getAppointmentDate(),
                 updatedAppointment.getAppointmentTime(),
                 updatedAppointment.getReason(),
