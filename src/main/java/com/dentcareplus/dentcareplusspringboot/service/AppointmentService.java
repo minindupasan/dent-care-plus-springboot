@@ -31,17 +31,14 @@ public class AppointmentService {
 
         if (appointment.getTreatment() != null) {
             Treatment treatment = appointment.getTreatment();
-            treatment.setAppointment(appointment);
+            treatment.setAppointment(appointment); // Ensure the Treatment is linked to the Appointment
         }
 
         Appointment savedAppointment = appointmentRepository.save(appointment);
 
-        // Convert Appointment entity to AppointmentDTO before returning
         return new AppointmentDTO(
                 savedAppointment.getAppointmentID(),
-                savedAppointment.getPatient().getPatientID(),
-                savedAppointment.getPatient().getFirstName(),
-                savedAppointment.getPatient().getLastName(),
+                savedAppointment.getPatient(),
                 savedAppointment.getAppointmentDate(),
                 savedAppointment.getAppointmentTime(),
                 savedAppointment.getReason(),
@@ -50,13 +47,10 @@ public class AppointmentService {
     }
 
     public List<AppointmentDTO> getAllAppointments() {
-        List<Appointment> appointments = appointmentRepository.findAll();
-        return appointments.stream()
+        return appointmentRepository.findAll().stream()
                 .map(appointment -> new AppointmentDTO(
                         appointment.getAppointmentID(),
-                        appointment.getPatient().getPatientID(),
-                        appointment.getPatient().getFirstName(),
-                        appointment.getPatient().getLastName(),
+                        appointment.getPatient(),
                         appointment.getAppointmentDate(),
                         appointment.getAppointmentTime(),
                         appointment.getReason(),
@@ -70,9 +64,7 @@ public class AppointmentService {
 
         return new AppointmentDTO(
                 appointment.getAppointmentID(),
-                appointment.getPatient().getPatientID(),
-                appointment.getPatient().getFirstName(),
-                appointment.getPatient().getLastName(),
+                appointment.getPatient(),
                 appointment.getAppointmentDate(),
                 appointment.getAppointmentTime(),
                 appointment.getReason(),
@@ -93,9 +85,7 @@ public class AppointmentService {
 
         return new AppointmentDTO(
                 updatedAppointment.getAppointmentID(),
-                updatedAppointment.getPatient().getPatientID(),
-                updatedAppointment.getPatient().getFirstName(),
-                updatedAppointment.getPatient().getLastName(),
+                updatedAppointment.getPatient(),
                 updatedAppointment.getAppointmentDate(),
                 updatedAppointment.getAppointmentTime(),
                 updatedAppointment.getReason(),

@@ -1,5 +1,6 @@
 package com.dentcareplus.dentcareplusspringboot.dto;
 
+import com.dentcareplus.dentcareplusspringboot.entity.Patient;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -9,20 +10,16 @@ import java.time.LocalTime;
 public class AppointmentDTO {
 
     private Long appointmentID;
-    private Long patientID;
-    private String firstName;
-    private String lastName;
+    private Patient patient; // Include the Patient object
     private LocalDate appointmentDate;
     private LocalTime appointmentTime;
     private String reason;
     private String status;
 
     // Constructor
-    public AppointmentDTO(Long appointmentID, Long patientID, String firstName, String lastName, LocalDate appointmentDate, LocalTime appointmentTime, String reason, String status) {
+    public AppointmentDTO(Long appointmentID, Patient patient, LocalDate appointmentDate, LocalTime appointmentTime, String reason, String status) {
         this.appointmentID = appointmentID;
-        this.patientID = patientID;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.patient = patient;
         this.appointmentDate = appointmentDate;
         this.appointmentTime = appointmentTime;
         this.reason = reason;
