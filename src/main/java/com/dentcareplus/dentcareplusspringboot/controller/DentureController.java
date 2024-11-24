@@ -1,5 +1,6 @@
 package com.dentcareplus.dentcareplusspringboot.controller;
 
+import com.dentcareplus.dentcareplusspringboot.dto.DentureDTO;
 import com.dentcareplus.dentcareplusspringboot.entity.Denture;
 import com.dentcareplus.dentcareplusspringboot.service.DentureService;
 import jakarta.validation.Valid;
@@ -23,31 +24,31 @@ public class DentureController {
     @PostMapping("/create/{patientId}")
     public ResponseEntity<Denture> createDenture(
             @PathVariable Long patientId,
-            @RequestBody @Valid Denture denture) {
-        Denture createdDenture = dentureService.createDenture(patientId, denture);
+            @RequestBody @Valid DentureDTO dentureDTO) {
+        Denture createdDenture = dentureService.createDenture(patientId, dentureDTO);
         return ResponseEntity.ok(createdDenture);
     }
 
     // Get all Dentures
     @GetMapping
-    public ResponseEntity<List<Denture>> getAllDentures() {
-        List<Denture> dentures = dentureService.getAllDentures();
+    public ResponseEntity<List<DentureDTO>> getAllDentures() {
+        List<DentureDTO> dentures = dentureService.getAllDentures();
         return ResponseEntity.ok(dentures);
     }
 
     // Get a Denture by ID
     @GetMapping("/{dentureId}")
-    public ResponseEntity<Denture> getDentureById(@PathVariable Long dentureId) {
-        Denture denture = dentureService.getDentureById(dentureId);
+    public ResponseEntity<DentureDTO> getDentureById(@PathVariable Long dentureId) {
+        DentureDTO denture = dentureService.getDentureById(dentureId);
         return ResponseEntity.ok(denture);
     }
 
     // Update a Denture
     @PutMapping("/update/{dentureId}")
-    public ResponseEntity<Denture> updateDenture(
+    public ResponseEntity<DentureDTO> updateDenture(
             @PathVariable Long dentureId,
-            @RequestBody @Valid Denture dentureDetails) {
-        Denture updatedDenture = dentureService.updateDenture(dentureId, dentureDetails);
+            @RequestBody @Valid DentureDTO dentureDTO) {
+        DentureDTO updatedDenture = dentureService.updateDenture(dentureId, dentureDTO);
         return ResponseEntity.ok(updatedDenture);
     }
 
