@@ -22,8 +22,8 @@ public class Appointment {
     )
     private Long appointmentID;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "patient_id", nullable = false, unique = true)
+    @ManyToOne
+    @JoinColumn(name = "patient_id", nullable = false)  // Removed CascadeType.ALL
     private Patient patient;
 
     @Column(name = "appointment_date", nullable = false)
