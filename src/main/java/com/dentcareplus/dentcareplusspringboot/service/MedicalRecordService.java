@@ -1,5 +1,6 @@
 package com.dentcareplus.dentcareplusspringboot.service;
 
+import com.dentcareplus.dentcareplusspringboot.dto.MedicalRecordDTO;
 import com.dentcareplus.dentcareplusspringboot.entity.MedicalRecord;
 import com.dentcareplus.dentcareplusspringboot.entity.Patient;
 import com.dentcareplus.dentcareplusspringboot.repository.MedicalRecordRepository;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MedicalRecordService {
@@ -22,56 +24,88 @@ public class MedicalRecordService {
     }
 
     // Create or update a medical record for a valid patient ID
-    public MedicalRecord createOrUpdateMedicalRecord(Long patientId, MedicalRecord medicalRecord) {
+    public MedicalRecordDTO createOrUpdateMedicalRecord(Long patientId, MedicalRecordDTO medicalRecordDTO) {
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new IllegalArgumentException("Patient with ID " + patientId + " not found."));
+
+        MedicalRecord medicalRecord = new MedicalRecord();
         medicalRecord.setPatient(patient);
+        medicalRecord.setBloodType(medicalRecordDTO.getBloodType());
+        medicalRecord.setDiabetes(medicalRecordDTO.getDiabetes());
+        medicalRecord.setHypertension(medicalRecordDTO.getHypertension());
+        medicalRecord.setHeartDisease(medicalRecordDTO.getHeartDisease());
+        medicalRecord.setBleedingDisorders(medicalRecordDTO.getBleedingDisorders());
+        medicalRecord.setOsteoporosis(medicalRecordDTO.getOsteoporosis());
+        medicalRecord.setArthritis(medicalRecordDTO.getArthritis());
+        medicalRecord.setAsthma(medicalRecordDTO.getAsthma());
+        medicalRecord.setEpilepsy(medicalRecordDTO.getEpilepsy());
+        medicalRecord.setHivAids(medicalRecordDTO.getHivAids());
+        medicalRecord.setHepatitis(medicalRecordDTO.getHepatitis());
+        medicalRecord.setThyroidDisorder(medicalRecordDTO.getThyroidDisorder());
+        medicalRecord.setPregnancy(medicalRecordDTO.getPregnancy());
+        medicalRecord.setSurgeries(medicalRecordDTO.getSurgeries());
+        medicalRecord.setCurrentMedications(medicalRecordDTO.getCurrentMedications());
+        medicalRecord.setDrugAllergies(medicalRecordDTO.getDrugAllergies());
+        medicalRecord.setAllergies(medicalRecordDTO.getAllergies());
+        medicalRecord.setMedications(medicalRecordDTO.getMedications());
+        medicalRecord.setMedicalConditions(medicalRecordDTO.getMedicalConditions());
+        medicalRecord.setEmergencyContactName(medicalRecordDTO.getEmergencyContactName());
+        medicalRecord.setEmergencyContactNumber(medicalRecordDTO.getEmergencyContactNumber());
 
-        return medicalRecordRepository.save(medicalRecord);
+        // Save the record and return the DTO
+        medicalRecord = medicalRecordRepository.save(medicalRecord);
+        return mapToDTO(medicalRecord);
     }
 
-    // Get all medical records
-    public List<MedicalRecord> getAllMedicalRecords() {
-        return medicalRecordRepository.findAll();
+    // Get all medical records and map to DTO
+    public List<MedicalRecordDTO> getAllMedicalRecords() {
+        return medicalRecordRepository.findAll().stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
-    // Get medical record by patient ID
-    public MedicalRecord getMedicalRecordByPatientId(Long patientId) {
+    // Get medical record by patient ID and map to DTO
+    public MedicalRecordDTO getMedicalRecordByPatientId(Long patientId) {
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new IllegalArgumentException("Patient with ID " + patientId + " not found."));
-        return medicalRecordRepository.findByPatient(patient)
+
+        MedicalRecord medicalRecord = medicalRecordRepository.findByPatient(patient)
                 .orElseThrow(() -> new IllegalArgumentException("Medical record for patient with ID " + patientId + " not found."));
+
+        return mapToDTO(medicalRecord);
     }
 
-    // Update a medical record
-    public MedicalRecord updateMedicalRecord(Long recordId, MedicalRecord medicalRecordDetails) {
+    // Update a medical record by record ID
+    public MedicalRecordDTO updateMedicalRecord(Long recordId, MedicalRecordDTO medicalRecordDTO) {
         MedicalRecord medicalRecord = medicalRecordRepository.findById(recordId)
                 .orElseThrow(() -> new IllegalArgumentException("Medical record with ID " + recordId + " not found."));
 
-        // Update all fields
-        medicalRecord.setBloodType(medicalRecordDetails.getBloodType());
-        medicalRecord.setDiabetes(medicalRecordDetails.getDiabetes());
-        medicalRecord.setHypertension(medicalRecordDetails.getHypertension());
-        medicalRecord.setHeartDisease(medicalRecordDetails.getHeartDisease());
-        medicalRecord.setBleedingDisorders(medicalRecordDetails.getBleedingDisorders());
-        medicalRecord.setOsteoporosis(medicalRecordDetails.getOsteoporosis());
-        medicalRecord.setArthritis(medicalRecordDetails.getArthritis());
-        medicalRecord.setAsthma(medicalRecordDetails.getAsthma());
-        medicalRecord.setEpilepsy(medicalRecordDetails.getEpilepsy());
-        medicalRecord.setHivAids(medicalRecordDetails.getHivAids());
-        medicalRecord.setHepatitis(medicalRecordDetails.getHepatitis());
-        medicalRecord.setThyroidDisorder(medicalRecordDetails.getThyroidDisorder());
-        medicalRecord.setPregnancy(medicalRecordDetails.getPregnancy());
-        medicalRecord.setSurgeries(medicalRecordDetails.getSurgeries());
-        medicalRecord.setCurrentMedications(medicalRecordDetails.getCurrentMedications());
-        medicalRecord.setDrugAllergies(medicalRecordDetails.getDrugAllergies());
-        medicalRecord.setAllergies(medicalRecordDetails.getAllergies());
-        medicalRecord.setMedications(medicalRecordDetails.getMedications());
-        medicalRecord.setMedicalConditions(medicalRecordDetails.getMedicalConditions());
-        medicalRecord.setEmergencyContactName(medicalRecordDetails.getEmergencyContactName());
-        medicalRecord.setEmergencyContactNumber(medicalRecordDetails.getEmergencyContactNumber());
+        // Update all fields from DTO
+        medicalRecord.setBloodType(medicalRecordDTO.getBloodType());
+        medicalRecord.setDiabetes(medicalRecordDTO.getDiabetes());
+        medicalRecord.setHypertension(medicalRecordDTO.getHypertension());
+        medicalRecord.setHeartDisease(medicalRecordDTO.getHeartDisease());
+        medicalRecord.setBleedingDisorders(medicalRecordDTO.getBleedingDisorders());
+        medicalRecord.setOsteoporosis(medicalRecordDTO.getOsteoporosis());
+        medicalRecord.setArthritis(medicalRecordDTO.getArthritis());
+        medicalRecord.setAsthma(medicalRecordDTO.getAsthma());
+        medicalRecord.setEpilepsy(medicalRecordDTO.getEpilepsy());
+        medicalRecord.setHivAids(medicalRecordDTO.getHivAids());
+        medicalRecord.setHepatitis(medicalRecordDTO.getHepatitis());
+        medicalRecord.setThyroidDisorder(medicalRecordDTO.getThyroidDisorder());
+        medicalRecord.setPregnancy(medicalRecordDTO.getPregnancy());
+        medicalRecord.setSurgeries(medicalRecordDTO.getSurgeries());
+        medicalRecord.setCurrentMedications(medicalRecordDTO.getCurrentMedications());
+        medicalRecord.setDrugAllergies(medicalRecordDTO.getDrugAllergies());
+        medicalRecord.setAllergies(medicalRecordDTO.getAllergies());
+        medicalRecord.setMedications(medicalRecordDTO.getMedications());
+        medicalRecord.setMedicalConditions(medicalRecordDTO.getMedicalConditions());
+        medicalRecord.setEmergencyContactName(medicalRecordDTO.getEmergencyContactName());
+        medicalRecord.setEmergencyContactNumber(medicalRecordDTO.getEmergencyContactNumber());
 
-        return medicalRecordRepository.save(medicalRecord);
+        // Save and return updated MedicalRecordDTO
+        medicalRecord = medicalRecordRepository.save(medicalRecord);
+        return mapToDTO(medicalRecord);
     }
 
     // Delete a medical record by ID
@@ -79,5 +113,34 @@ public class MedicalRecordService {
         MedicalRecord medicalRecord = medicalRecordRepository.findById(recordId)
                 .orElseThrow(() -> new IllegalArgumentException("Medical record with ID " + recordId + " not found."));
         medicalRecordRepository.delete(medicalRecord);
+    }
+
+    // Helper method to map MedicalRecord entity to MedicalRecordDTO
+    private MedicalRecordDTO mapToDTO(MedicalRecord medicalRecord) {
+        MedicalRecordDTO dto = new MedicalRecordDTO();
+        dto.setRecordID(medicalRecord.getRecordID());
+        dto.setPatientId(medicalRecord.getPatient().getPatientID());
+        dto.setBloodType(medicalRecord.getBloodType());
+        dto.setDiabetes(medicalRecord.getDiabetes());
+        dto.setHypertension(medicalRecord.getHypertension());
+        dto.setHeartDisease(medicalRecord.getHeartDisease());
+        dto.setBleedingDisorders(medicalRecord.getBleedingDisorders());
+        dto.setOsteoporosis(medicalRecord.getOsteoporosis());
+        dto.setArthritis(medicalRecord.getArthritis());
+        dto.setAsthma(medicalRecord.getAsthma());
+        dto.setEpilepsy(medicalRecord.getEpilepsy());
+        dto.setHivAids(medicalRecord.getHivAids());
+        dto.setHepatitis(medicalRecord.getHepatitis());
+        dto.setThyroidDisorder(medicalRecord.getThyroidDisorder());
+        dto.setPregnancy(medicalRecord.getPregnancy());
+        dto.setSurgeries(medicalRecord.getSurgeries());
+        dto.setCurrentMedications(medicalRecord.getCurrentMedications());
+        dto.setDrugAllergies(medicalRecord.getDrugAllergies());
+        dto.setAllergies(medicalRecord.getAllergies());
+        dto.setMedications(medicalRecord.getMedications());
+        dto.setMedicalConditions(medicalRecord.getMedicalConditions());
+        dto.setEmergencyContactName(medicalRecord.getEmergencyContactName());
+        dto.setEmergencyContactNumber(medicalRecord.getEmergencyContactNumber());
+        return dto;
     }
 }
