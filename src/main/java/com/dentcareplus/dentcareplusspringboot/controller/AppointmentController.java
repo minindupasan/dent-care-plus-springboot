@@ -1,5 +1,6 @@
 package com.dentcareplus.dentcareplusspringboot.controller;
 
+import com.dentcareplus.dentcareplusspringboot.dto.AppointmentDTO;
 import com.dentcareplus.dentcareplusspringboot.entity.Appointment;
 import com.dentcareplus.dentcareplusspringboot.service.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,26 +18,26 @@ public class AppointmentController {
     private AppointmentService appointmentService;
 
     @PostMapping("/create/{patientId}")
-    public ResponseEntity<Appointment> createAppointment(@PathVariable Long patientId, @RequestBody Appointment appointment) {
-        Appointment newAppointment = appointmentService.createAppointment(patientId, appointment);
+    public ResponseEntity<AppointmentDTO> createAppointment(@PathVariable Long patientId, @RequestBody Appointment appointment) {
+        AppointmentDTO newAppointment = appointmentService.createAppointment(patientId, appointment);
         return ResponseEntity.status(HttpStatus.CREATED).body(newAppointment);
     }
 
     @GetMapping
-    public ResponseEntity<List<Appointment>> getAllAppointments() {
-        List<Appointment> appointments = appointmentService.getAllAppointments();
+    public ResponseEntity<List<AppointmentDTO>> getAllAppointments() {
+        List<AppointmentDTO> appointments = appointmentService.getAllAppointments();
         return ResponseEntity.ok(appointments);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Appointment> getAppointmentById(@PathVariable Long id) {
-        Appointment appointment = appointmentService.getAppointmentById(id);
+    public ResponseEntity<AppointmentDTO> getAppointmentById(@PathVariable Long id) {
+        AppointmentDTO appointment = appointmentService.getAppointmentById(id);
         return ResponseEntity.ok(appointment);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Appointment> updateAppointment(@PathVariable Long id, @RequestBody Appointment appointmentDetails) {
-        Appointment updatedAppointment = appointmentService.updateAppointment(id, appointmentDetails);
+    public ResponseEntity<AppointmentDTO> updateAppointment(@PathVariable Long id, @RequestBody Appointment appointmentDetails) {
+        AppointmentDTO updatedAppointment = appointmentService.updateAppointment(id, appointmentDetails);
         return ResponseEntity.ok(updatedAppointment);
     }
 

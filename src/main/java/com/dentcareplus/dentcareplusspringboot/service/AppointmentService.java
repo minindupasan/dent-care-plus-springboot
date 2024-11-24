@@ -1,5 +1,6 @@
 package com.dentcareplus.dentcareplusspringboot.service;
 
+import com.dentcareplus.dentcareplusspringboot.dto.AppointmentDTO;
 import com.dentcareplus.dentcareplusspringboot.entity.Appointment;
 import com.dentcareplus.dentcareplusspringboot.entity.Patient;
 import com.dentcareplus.dentcareplusspringboot.entity.Treatment;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AppointmentService {
@@ -21,7 +23,7 @@ public class AppointmentService {
         this.patientRepository = patientRepository;
     }
 
-    public Appointment createAppointment(Long patientId, Appointment appointment) {
+    public AppointmentDTO createAppointment(Long patientId, Appointment appointment) {
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new IllegalArgumentException("Patient with ID " + patientId + " not found."));
 
@@ -32,19 +34,47 @@ public class AppointmentService {
             treatment.setAppointment(appointment);
         }
 
-        return appointmentRepository.save(appointment);
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+
+        // Convert Appointment entity to AppointmentDTO before returning
+        return new AppointmentDTO(
+                savedAppointment.getAppointmentID(),
+                savedAppointment.getPatient().getPatientID(),
+                savedAppointment.getAppointmentDate(),
+                savedAppointment.getAppointmentTime(),
+                savedAppointment.getReason(),
+                savedAppointment.getStatus()
+        );
     }
 
-    public List<Appointment> getAllAppointments() {
-        return appointmentRepository.findAll();
+    public List<AppointmentDTO> getAllAppointments() {
+        List<Appointment> appointments = appointmentRepository.findAll();
+        return appointments.stream()
+                .map(appointment -> new AppointmentDTO(
+                        appointment.getAppointmentID(),
+                        appointment.getPatient().getPatientID(),
+                        appointment.getAppointmentDate(),
+                        appointment.getAppointmentTime(),
+                        appointment.getReason(),
+                        appointment.getStatus()))
+                .collect(Collectors.toList());
     }
 
-    public Appointment getAppointmentById(Long id) {
-        return appointmentRepository.findById(id)
+    public AppointmentDTO getAppointmentById(Long id) {
+        Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Appointment with ID " + id + " not found."));
+
+        return new AppointmentDTO(
+                appointment.getAppointmentID(),
+                appointment.getPatient().getPatientID(),
+                appointment.getAppointmentDate(),
+                appointment.getAppointmentTime(),
+                appointment.getReason(),
+                appointment.getStatus()
+        );
     }
 
-    public Appointment updateAppointment(Long id, Appointment appointmentDetails) {
+    public AppointmentDTO updateAppointment(Long id, Appointment appointmentDetails) {
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Appointment with ID " + id + " not found."));
 
@@ -53,7 +83,16 @@ public class AppointmentService {
         appointment.setReason(appointmentDetails.getReason());
         appointment.setStatus(appointmentDetails.getStatus());
 
-        return appointmentRepository.save(appointment);
+        Appointment updatedAppointment = appointmentRepository.save(appointment);
+
+        return new AppointmentDTO(
+                updatedAppointment.getAppointmentID(),
+                updatedAppointment.getPatient().getPatientID(),
+                updatedAppointment.getAppointmentDate(),
+                updatedAppointment.getAppointmentTime(),
+                updatedAppointment.getReason(),
+                updatedAppointment.getStatus()
+        );
     }
 
     public void deleteAppointment(Long id) {

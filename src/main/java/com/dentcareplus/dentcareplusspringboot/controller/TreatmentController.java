@@ -1,5 +1,6 @@
 package com.dentcareplus.dentcareplusspringboot.controller;
 
+import com.dentcareplus.dentcareplusspringboot.dto.TreatmentDTO;
 import com.dentcareplus.dentcareplusspringboot.entity.Treatment;
 import com.dentcareplus.dentcareplusspringboot.service.TreatmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,30 +14,57 @@ import java.util.List;
 @RequestMapping("/api/treatments")
 @CrossOrigin(origins = {"https://dental-clinic-management-system-five.vercel.app", "http://localhost:3000"})
 public class TreatmentController {
+
     @Autowired
     private TreatmentService treatmentService;
 
+    // GET request to fetch all treatments
     @GetMapping
-    public ResponseEntity<List<Treatment>> getAllTreatments() {
-        List<Treatment> treatments = treatmentService.getAllTreatments();
+    public ResponseEntity<List<TreatmentDTO>> getAllTreatments() {
+        List<TreatmentDTO> treatments = treatmentService.getAllTreatments();
+
+        if (treatments.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+
         return ResponseEntity.ok(treatments);
     }
 
+    // GET request to fetch a treatment by ID
     @GetMapping("/{treatmentId}")
-    public ResponseEntity<Treatment> getTreatmentById(@PathVariable Long treatmentId) {
-        Treatment treatment = treatmentService.getTreatmentById(treatmentId);
-        return ResponseEntity.ok(treatment);
+    public ResponseEntity<TreatmentDTO> getTreatmentById(@PathVariable Long treatmentId) {
+        TreatmentDTO treatmentDTO = treatmentService.getTreatmentById(treatmentId);
+
+        if (treatmentDTO == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        return ResponseEntity.ok(treatmentDTO);
     }
 
-    @PutMapping("/update/{treatmentId}")
-    public ResponseEntity<Treatment> updateTreatment(@PathVariable Long treatmentId, @RequestBody Treatment treatmentDetails) {
-        Treatment updatedTreatment = treatmentService.updateTreatment(treatmentId, treatmentDetails);
+    // PUT request to update a treatment by ID
+    @PutMapping("/{treatmentId}")
+    public ResponseEntity<TreatmentDTO> updateTreatment(
+            @PathVariable Long treatmentId,
+            @RequestBody TreatmentDTO treatmentDTO) {
+        TreatmentDTO updatedTreatment = treatmentService.updateTreatment(treatmentId, treatmentDTO);
+
+        if (updatedTreatment == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
         return ResponseEntity.ok(updatedTreatment);
     }
 
-    @DeleteMapping("/delete/{treatmentId}")
+    // DELETE request to delete a treatment by ID
+    @DeleteMapping("/{treatmentId}")
     public ResponseEntity<Void> deleteTreatment(@PathVariable Long treatmentId) {
-        treatmentService.deleteTreatment(treatmentId);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        boolean deleted = treatmentService.deleteTreatment(treatmentId);
+
+        if (!deleted) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        return ResponseEntity.noContent().build();
     }
 }
