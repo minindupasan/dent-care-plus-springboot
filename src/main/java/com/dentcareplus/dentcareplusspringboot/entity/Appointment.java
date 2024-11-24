@@ -22,8 +22,8 @@ public class Appointment {
     )
     private Long appointmentID;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "patient_id", nullable = false)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "patient_id", nullable = false, unique = true)
     private Patient patient;
 
     @Column(name = "appointment_date", nullable = false)

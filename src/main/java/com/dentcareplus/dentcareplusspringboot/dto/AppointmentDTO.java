@@ -9,16 +9,16 @@ import java.time.LocalTime;
 public class AppointmentDTO {
 
     private Long appointmentID;
-    private Long patientID;
+    private PatientDTO patient; // Include full patient details
     private LocalDate appointmentDate;
     private LocalTime appointmentTime;
     private String reason;
     private String status;
 
     // Constructor
-    public AppointmentDTO(Long appointmentID, Long patientID, LocalDate appointmentDate, LocalTime appointmentTime, String reason, String status) {
+    public AppointmentDTO(Long appointmentID, PatientDTO patient, LocalDate appointmentDate, LocalTime appointmentTime, String reason, String status) {
         this.appointmentID = appointmentID;
-        this.patientID = patientID;
+        this.patient = patient;
         this.appointmentDate = appointmentDate;
         this.appointmentTime = appointmentTime;
         this.reason = reason;

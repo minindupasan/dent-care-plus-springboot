@@ -1,5 +1,6 @@
 package com.dentcareplus.dentcareplusspringboot.service;
 
+import com.dentcareplus.dentcareplusspringboot.dto.PatientDTO;
 import com.dentcareplus.dentcareplusspringboot.entity.Patient;
 import com.dentcareplus.dentcareplusspringboot.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PatientService {
@@ -18,59 +20,62 @@ public class PatientService {
     }
 
     // Create a new patient
-    public Patient createPatient(Patient patient) {
-        // Set the created date to the current date if not provided
+    public PatientDTO createPatient(Patient patient) {
         if (patient.getCreatedDate() == null) {
             patient.setCreatedDate(java.time.LocalDate.now());
         }
-        return patientRepository.save(patient);
+        Patient savedPatient = patientRepository.save(patient);
+        return mapToPatientDTO(savedPatient);
     }
 
-    // Get all patients with formatted patient ID
-    public List<Patient> getAllPatients() {
-        List<Patient> patients = patientRepository.findAll();
-        patients.forEach(patient -> {
-            System.out.println("Patient ID: " + patient.getPatientID()); // Log the formatted patient ID
-        });
-        return patients;
+    // Get all patients
+    public List<PatientDTO> getAllPatients() {
+        return patientRepository.findAll().stream()
+                .map(this::mapToPatientDTO)
+                .collect(Collectors.toList());
     }
 
-    // Get a patient by ID with formatted patient ID
-    public Patient getPatientById(Long id) {
-        Optional<Patient> patient = patientRepository.findById(id);
-        if (patient.isPresent()) {
-            Patient foundPatient = patient.get();
-            System.out.println("Retrieved Patient ID: " + foundPatient.getPatientID()); // Log formatted ID
-            return foundPatient;
-        }
-        return null;
+    // Get a patient by ID
+    public PatientDTO getPatientById(Long id) {
+        Patient patient = patientRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Patient with ID " + id + " not found."));
+        return mapToPatientDTO(patient);
     }
 
-    // Update a patient's details and log the formatted patient ID
-    public Patient updatePatient(Long id, Patient patientDetails) {
-        Optional<Patient> optionalPatient = patientRepository.findById(id);
-        if (optionalPatient.isPresent()) {
-            Patient patient = optionalPatient.get();
-            patient.setFirstName(patientDetails.getFirstName());
-            patient.setLastName(patientDetails.getLastName());
-            patient.setEmail(patientDetails.getEmail());
-            patient.setGender(patientDetails.getGender());
-            patient.setDob(patientDetails.getDob());
-            patient.setCreatedDate(patientDetails.getCreatedDate());
-            Patient updatedPatient = patientRepository.save(patient);
-            System.out.println("Updated Patient ID: " + updatedPatient.getPatientID()); // Log formatted ID
-            return updatedPatient;
-        } else {
-            return null;
-        }
+    // Update a patient's details
+    public PatientDTO updatePatient(Long id, Patient patientDetails) {
+        Patient patient = patientRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Patient with ID " + id + " not found."));
+        patient.setFirstName(patientDetails.getFirstName());
+        patient.setLastName(patientDetails.getLastName());
+        patient.setEmail(patientDetails.getEmail());
+        patient.setContactNo(patientDetails.getContactNo());
+        patient.setGender(patientDetails.getGender());
+        patient.setDob(patientDetails.getDob());
+        patient.setCreatedDate(patientDetails.getCreatedDate());
+
+        Patient updatedPatient = patientRepository.save(patient);
+        return mapToPatientDTO(updatedPatient);
     }
 
     // Delete a patient by ID
     public void deletePatient(Long id) {
-        Optional<Patient> patient = patientRepository.findById(id);
-        if (patient.isPresent()) {
-            System.out.println("Deleting Patient ID: " + patient.get().getPatientID()); // Log formatted ID before deletion
-            patientRepository.deleteById(id);
-        }
+        Patient patient = patientRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Patient with ID " + id + " not found."));
+        patientRepository.delete(patient);
+    }
+
+    // Helper method to map Patient to PatientDTO
+    private PatientDTO mapToPatientDTO(Patient patient) {
+        return new PatientDTO(
+                patient.getPatientID(),
+                patient.getFirstName(),
+                patient.getLastName(),
+                patient.getEmail(),
+                patient.getContactNo(),
+                patient.getGender(),
+                patient.getDob(),
+                patient.getCreatedDate()
+        );
     }
 }

@@ -17,10 +17,12 @@ public class TreatmentDTO {
     private String paymentStatus;
     private String treatmentStatus;
     private String notes;
+    private PatientDTO patient;  // Include patient details
 
-    public TreatmentDTO(Long treatmentID, String treatmentType, LocalDate startDate, LocalDate endDate, Double totalPaid, Double dueAmount, String paymentStatus, String treatmentStatus, String notes, Long appointmentID) {
+    public TreatmentDTO(Long treatmentID, String treatmentType, LocalDate startDate, LocalDate endDate,
+                        Double totalPaid, Double dueAmount, String paymentStatus, String treatmentStatus,
+                        String notes, Long appointmentID, PatientDTO patient) {
         this.treatmentID = treatmentID;
-        this.appointmentID = appointmentID;
         this.treatmentType = treatmentType;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -29,5 +31,7 @@ public class TreatmentDTO {
         this.paymentStatus = paymentStatus;
         this.treatmentStatus = treatmentStatus;
         this.notes = notes;
+        this.appointmentID = appointmentID;
+        this.patient = patient;
     }
 }
