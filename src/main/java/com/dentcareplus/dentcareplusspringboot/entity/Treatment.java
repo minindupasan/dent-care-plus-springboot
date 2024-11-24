@@ -1,3 +1,4 @@
+
 package com.dentcareplus.dentcareplusspringboot.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -10,22 +11,28 @@ import java.time.LocalDate;
 @Table(name = "treatment")
 @Data
 public class Treatment {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "treatment_sequence",
+            sequenceName = "treatment_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "treatment_sequence"
+    )
     private Long treatmentID;
 
-    @ManyToOne
-    @JoinColumn(name = "appointment_id", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "appointment_id", nullable = false, unique = true)
     @JsonIgnoreProperties({"treatment", "patient"})
-    // Avoid infinite recursion and avoid sending full Appointment object
     private Appointment appointment;
 
     @Column(name = "treatment_type", nullable = false)
     private String treatmentType;
 
     @Column(name = "start_date")
-    private LocalDate startDate;
+    private LocalDate startDate = LocalDate.now();
 
     @Column(name = "end_date")
     private LocalDate endDate;
@@ -36,10 +43,15 @@ public class Treatment {
     @Column(name = "due_amount")
     private Double dueAmount;
 
+    @Column(name = "payment_status")
+    private String paymentStatus = "Pending";
+
+    @Column(name = "treatment_status")
+    private String treatmentStatus = "In Progress";
+
     @Column(name = "notes", length = 500)
     private String notes;
 
-    // Getter for appointment ID
     public Long getAppointmentID() {
         return this.appointment != null ? this.appointment.getAppointmentID() : null;
     }
