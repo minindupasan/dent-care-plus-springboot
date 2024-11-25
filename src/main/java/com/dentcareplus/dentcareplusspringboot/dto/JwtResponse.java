@@ -1,10 +1,14 @@
 package com.dentcareplus.dentcareplusspringboot.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
 public class JwtResponse {
-    private String token;
+    private String jwtToken;
+    private String role;
+
+    public JwtResponse(String jwtToken, String role) {
+        this.jwtToken = jwtToken;
+        this.role = role;
+    }
 }
