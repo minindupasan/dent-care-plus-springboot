@@ -21,7 +21,7 @@ public class Denture {
             generator = "denture_sequence"
     )
     @Column(name = "denture_id")
-    private Long dentureId; // Primary Key
+    private Long dentureID; // Primary Key
 
     // Relationship with Patient
     @ManyToOne
@@ -45,7 +45,7 @@ public class Denture {
     private LocalDate receivedDate; // Nullable
 
     @Column(name = "delivery_status")
-    private String deliveryStatus; // Nullable
+    private String deliveryStatus;
 
     @Column(name = "remarks", length = 500)
     private String remarks;
@@ -54,7 +54,7 @@ public class Denture {
     private Double cost;
 
     @Column(name = "payment_status")
-    private String paymentStatus; // Nullable
+    private String paymentStatus;
 
     @Column(name = "lab_name", nullable = false)
     private String labName;

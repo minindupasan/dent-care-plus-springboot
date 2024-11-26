@@ -29,6 +29,9 @@ public class Inventory {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
+    @Column(name = "current_quantity", nullable = false)
+    private Integer currentQuantity;
+
     @Column(name = "status_level", nullable = false)
     private String statusLevel; // e.g., In Stock, Low Stock, Out of Stock
 
@@ -50,14 +53,27 @@ public class Inventory {
     private Double totalCost; // Total cost (quantity * unitCost)
 
     @Column(name = "last_updated")
-    private LocalDate lastUpdated; // Last update date of inventory
+    private LocalDate lastUpdated = LocalDate.now(); // Last update date of inventory
 
-    // Lifecycle callback to calculate total cost before persisting or updating the entity
+    // Lifecycle callback to calculate total cost and set current quantity before persisting or updating the entity
     @PrePersist
     @PreUpdate
     private void calculateTotalCost() {
         if (unitCost != null && quantity != null) {
             this.totalCost = unitCost * quantity;
+        }
+        if (this.currentQuantity == null) {
+            this.currentQuantity = this.quantity; // Set currentQuantity to the same as quantity during creation
+        }
+    }
+
+    // Method to decrease the quantity and update currentQuantity accordingly
+    public void decreaseQuantity() {
+        if (this.quantity > 0) {
+            this.quantity--;
+            this.currentQuantity = this.quantity; // Sync currentQuantity with quantity
+        } else {
+            throw new IllegalArgumentException("Quantity cannot be less than 0.");
         }
     }
 }
