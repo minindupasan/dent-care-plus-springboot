@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/inventory")
-@CrossOrigin(origins = {"https://dental-clinic-management-system-five.vercel.app", "http://localhost:3000"})
+@CrossOrigin
 public class InventoryController {
 
     @Autowired
@@ -44,7 +44,7 @@ public class InventoryController {
         return ResponseEntity.ok(inventory);
     }
 
-    // PUT request to update an inventory item
+    // PUT request to update an inventory item (except for the total quantity)
     @PutMapping("/update/{inventoryId}")
     public ResponseEntity<InventoryDTO> updateInventoryItem(@PathVariable Long inventoryId, @RequestBody Inventory inventoryDetails) {
         InventoryDTO updatedInventory = inventoryService.updateInventoryItem(inventoryId, inventoryDetails);
@@ -56,5 +56,12 @@ public class InventoryController {
     public ResponseEntity<Void> deleteInventoryItem(@PathVariable Long inventoryId) {
         inventoryService.deleteInventoryItem(inventoryId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    // PUT request to decrease the currentQuantity by 1
+    @PutMapping("/decrease/{itemID}")
+    public ResponseEntity<InventoryDTO> decreaseInventoryQuantity(@PathVariable Long itemID) {
+        InventoryDTO updatedInventory = inventoryService.decreaseQuantity(itemID);
+        return ResponseEntity.ok(updatedInventory);
     }
 }

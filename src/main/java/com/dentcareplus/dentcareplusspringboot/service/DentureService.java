@@ -1,12 +1,15 @@
 package com.dentcareplus.dentcareplusspringboot.service;
 
 import com.dentcareplus.dentcareplusspringboot.dto.DentureDTO;
+import com.dentcareplus.dentcareplusspringboot.dto.PatientDTO;
 import com.dentcareplus.dentcareplusspringboot.entity.Denture;
 import com.dentcareplus.dentcareplusspringboot.entity.Patient;
 import com.dentcareplus.dentcareplusspringboot.repository.DentureRepository;
 import com.dentcareplus.dentcareplusspringboot.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,21 +26,15 @@ public class DentureService {
         this.patientRepository = patientRepository;
     }
 
-    /**
-     * Create a new denture record for a valid patient ID.
-     *
-     * @param patientId  - The patient ID for which the denture is being created.
-     * @param dentureDTO - The data transfer object containing denture details.
-     * @return - The saved Denture entity.
-     */
-    public Denture createDenture(Long patientId, DentureDTO dentureDTO) {
-        // Fetching patient by patientId
+    // Create a new Denture
+    public DentureDTO createDenture(Long patientId, DentureDTO dentureDTO) {
+        // Find the patient by ID
         Patient patient = patientRepository.findById(patientId)
-                .orElseThrow(() -> new IllegalArgumentException("Patient with ID " + patientId + " not found."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Patient not found with ID: " + patientId));
 
-        // Creating a new Denture entity from DTO
+        // Map the DTO to the Denture entity
         Denture denture = new Denture();
-        denture.setPatient(patient);
+        denture.setDentureID(dentureDTO.getDentureID());
         denture.setDentureType(dentureDTO.getDentureType());
         denture.setMaterialType(dentureDTO.getMaterialType());
         denture.setTrialDentureDate(dentureDTO.getTrialDentureDate());
@@ -49,47 +46,37 @@ public class DentureService {
         denture.setDeliveryStatus(dentureDTO.getDeliveryStatus());
         denture.setLabName(dentureDTO.getLabName());
         denture.setOrderedDate(dentureDTO.getOrderedDate());
+        denture.setPatient(patient); // Associate the patient
 
-        // Save and return the created denture
-        return dentureRepository.save(denture);
+        // Save the denture entity to the database
+        Denture savedDenture = dentureRepository.save(denture);
+
+        // Map the saved entity to a DTO and return it
+        return mapToDTO(savedDenture);
     }
 
-    /**
-     * Get all dentures.
-     *
-     * @return - List of all DentureDTO objects.
-     */
+    // Retrieve all Dentures
     public List<DentureDTO> getAllDentures() {
-        List<Denture> dentures = dentureRepository.findAll();
-        return dentures.stream()
-                .map(denture -> mapToDTO(denture)) // Map Denture to DentureDTO
+        return dentureRepository.findAll()
+                .stream()
+                .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Get a denture by its ID.
-     *
-     * @param dentureId - The ID of the denture to retrieve.
-     * @return - The DentureDTO for the specified denture.
-     */
+    // Retrieve a single Denture by ID
     public DentureDTO getDentureById(Long dentureId) {
         Denture denture = dentureRepository.findById(dentureId)
-                .orElseThrow(() -> new IllegalArgumentException("Denture with ID " + dentureId + " not found."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Denture not found with ID: " + dentureId));
         return mapToDTO(denture);
     }
 
-    /**
-     * Update a denture's information.
-     *
-     * @param dentureId  - The ID of the denture to update.
-     * @param dentureDTO - The new data to update the denture with.
-     * @return - The updated DentureDTO.
-     */
+    // Update an existing Denture
     public DentureDTO updateDenture(Long dentureId, DentureDTO dentureDTO) {
+        // Fetch the existing Denture by ID
         Denture denture = dentureRepository.findById(dentureId)
-                .orElseThrow(() -> new IllegalArgumentException("Denture with ID " + dentureId + " not found."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Denture not found with ID: " + dentureId));
 
-        // Updating the Denture entity fields
+        // Update only the necessary fields (don't reset the ID)
         denture.setDentureType(dentureDTO.getDentureType());
         denture.setMaterialType(dentureDTO.getMaterialType());
         denture.setTrialDentureDate(dentureDTO.getTrialDentureDate());
@@ -102,30 +89,24 @@ public class DentureService {
         denture.setLabName(dentureDTO.getLabName());
         denture.setOrderedDate(dentureDTO.getOrderedDate());
 
-        // Save and return the updated denture
-        denture = dentureRepository.save(denture);
-        return mapToDTO(denture);
+        // Save the updated Denture entity to the database
+        Denture updatedDenture = dentureRepository.save(denture);
+
+        // Return the updated DTO
+        return mapToDTO(updatedDenture);
     }
 
-    /**
-     * Delete a denture by its ID.
-     *
-     * @param dentureId - The ID of the denture to delete.
-     */
+    // Delete a Denture
     public void deleteDenture(Long dentureId) {
         Denture denture = dentureRepository.findById(dentureId)
-                .orElseThrow(() -> new IllegalArgumentException("Denture with ID " + dentureId + " not found."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Denture not found with ID: " + dentureId));
         dentureRepository.delete(denture);
     }
 
-    /**
-     * Helper method to convert Denture entity to DentureDTO.
-     *
-     * @param denture - The Denture entity to map.
-     * @return - The corresponding DentureDTO.
-     */
+    // Map Denture entity to DTO
     private DentureDTO mapToDTO(Denture denture) {
         DentureDTO dentureDTO = new DentureDTO();
+        dentureDTO.setDentureID(denture.getDentureID());
         dentureDTO.setDentureType(denture.getDentureType());
         dentureDTO.setMaterialType(denture.getMaterialType());
         dentureDTO.setTrialDentureDate(denture.getTrialDentureDate());
@@ -137,6 +118,31 @@ public class DentureService {
         dentureDTO.setDeliveryStatus(denture.getDeliveryStatus());
         dentureDTO.setLabName(denture.getLabName());
         dentureDTO.setOrderedDate(denture.getOrderedDate());
+
+        // Map associated patient information
+        PatientDTO patientDTO = new PatientDTO(
+                denture.getPatient().getPatientID(),
+                denture.getPatient().getFirstName(),
+                denture.getPatient().getLastName(),
+                denture.getPatient().getGender(),
+                denture.getPatient().getEmail(),
+                denture.getPatient().getContactNo(),
+                denture.getPatient().getDob(),
+                denture.getPatient().getCreatedDate()
+        );
+        Patient patient = denture.getPatient();
+        if (patient != null) {
+            patientDTO.setPatientID(patient.getPatientID());
+            patientDTO.setFirstName(patient.getFirstName());
+            patientDTO.setLastName(patient.getLastName());
+            patientDTO.setEmail(patient.getEmail());
+            patientDTO.setContactNo(patient.getContactNo());
+            patientDTO.setGender(patient.getGender());
+            patientDTO.setDob(patient.getDob());
+            patientDTO.setCreatedDate(patient.getCreatedDate());
+        }
+
+        dentureDTO.setPatient(patientDTO);
         return dentureDTO;
     }
 }
