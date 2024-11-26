@@ -22,10 +22,15 @@ public class CorsConfig {
         config.addAllowedMethod("DELETE");
         config.addAllowedMethod("PATCH");
         config.addAllowedMethod("OPTIONS");
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        config.setAllowCredentials(true);
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);
 
         return new CorsFilter(source);
     }
 }
+
+
+
