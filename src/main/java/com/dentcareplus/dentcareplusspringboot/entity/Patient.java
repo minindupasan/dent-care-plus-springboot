@@ -55,7 +55,7 @@ public class Patient {
     @Column(name = "dob", nullable = false)
     private LocalDate dob;
 
-    @Column(name = "created_date", nullable = false)
+    @Column(name = "created_date")
     private LocalDate createdDate;
 
     // Constructor to initialize createdDate

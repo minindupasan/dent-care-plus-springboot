@@ -70,9 +70,9 @@ public class PatientService {
                 patient.getPatientID(),
                 patient.getFirstName(),
                 patient.getLastName(),
-                patient.getGender(),
                 patient.getEmail(),
                 patient.getContactNo(),
+                patient.getGender(),
                 patient.getDob(),
                 patient.getCreatedDate()
         );
